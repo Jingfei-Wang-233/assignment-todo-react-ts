@@ -17,7 +17,10 @@ const App = () => {
     <div className="App">
       <ul>
         {tasks.map((task) => (
-          <li key={task.id}>{task.name}</li>
+          <li key={task.id}>
+            <input type="checkbox" id={task.id as unknown as string} />
+            <label htmlFor={task.id as unknown as string}>{task.name}</label>
+          </li>
         ))}
       </ul>
     </div>
