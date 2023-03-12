@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { add, fetch, update } from './api/tasks';
+import { add, fetch, remove, update } from './api/tasks';
 import { Task } from './types';
 
 const App = () => {
@@ -28,6 +28,11 @@ const App = () => {
     add(newTodo.trim()).then((data) => setTasks([...tasks, data]));
     setNewTodo('');
   };
+  const handleDelete = (id: number | undefined) => {
+    console.log(tasks.length);
+    remove(Number(id));
+    setTasks(tasks.filter((task) => task.id !== id));
+  };
   return (
     <div className="App">
       <h3>Todo List</h3>
@@ -49,13 +54,18 @@ const App = () => {
             (task) =>
               !task.completed && (
                 <li key={task.id}>
-                  <input
-                    type="checkbox"
-                    id={task.id as unknown as string}
-                    checked={task.completed}
-                    onChange={() => handleChange(task)}
-                  />
-                  <label>{task.name}</label>
+                  <div>
+                    <input
+                      type="checkbox"
+                      id={task.id as unknown as string}
+                      checked={task.completed}
+                      onChange={() => handleChange(task)}
+                    />
+                    <label> {task.name} </label>
+                    <button className="bi-trash" onClick={() => handleDelete(task.id)}>
+                      del
+                    </button>
+                  </div>
                 </li>
               ),
           )
@@ -67,13 +77,18 @@ const App = () => {
           (task) =>
             task.completed && (
               <li key={task.id}>
-                <input
-                  type="checkbox"
-                  id={task.id as unknown as string}
-                  checked={task.completed}
-                  onChange={() => handleChange(task)}
-                />
-                <label>{task.name}</label>
+                <div>
+                  <input
+                    type="checkbox"
+                    id={task.id as unknown as string}
+                    checked={task.completed}
+                    onChange={() => handleChange(task)}
+                  />
+                  <label>{task.name}</label>
+                  <button className="bi-trash" onClick={() => handleDelete(task.id)}>
+                    del
+                  </button>
+                </div>
               </li>
             ),
         )}
