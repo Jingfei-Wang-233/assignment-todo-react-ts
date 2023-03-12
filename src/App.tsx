@@ -44,20 +44,22 @@ const App = () => {
         </button>
       </section>
       <ul>
-        {tasks.map(
-          (task) =>
-            !task.completed && (
-              <li key={task.id}>
-                <input
-                  type="checkbox"
-                  id={task.id as unknown as string}
-                  checked={task.completed}
-                  onChange={() => handleChange(task)}
-                />
-                <label>{task.name}</label>
-              </li>
-            ),
-        )}
+        {tasks
+          .map(
+            (task) =>
+              !task.completed && (
+                <li key={task.id}>
+                  <input
+                    type="checkbox"
+                    id={task.id as unknown as string}
+                    checked={task.completed}
+                    onChange={() => handleChange(task)}
+                  />
+                  <label>{task.name}</label>
+                </li>
+              ),
+          )
+          .reverse()}
       </ul>
       <h3>Completed List</h3>
       <ul>
