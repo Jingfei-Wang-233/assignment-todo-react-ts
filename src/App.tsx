@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { fetch } from './api/tasks';
+import { fetch, update } from './api/tasks';
 import { Task } from './types';
 
 const App = () => {
@@ -13,15 +13,59 @@ const App = () => {
     // console.log(tasks);
   }, []);
 
+  function handleChange(task: Task) {
+    //console.log(task);
+    const updatedTask = {
+      ...task,
+      completed: !task.completed,
+    };
+    update(Number(task.id), updatedTask).then((data) => console.log(data));
+    fetch().then((data) => setTasks(data));
+    // setTasks((tasks) => {
+    //   tasks[Number(task.id)] = data;
+    //   return tasks;
+    // };
+    // setTasks((tasks) => {
+    //   tasks[Number(task.id)] = updatedTask;
+    //   return tasks;
+    // });
+  }
+
   return (
     <div className="App">
+      <h3>Todo List</h3>
       <ul>
-        {tasks.map((task) => (
-          <li key={task.id}>
-            <input type="checkbox" id={task.id as unknown as string} />
-            <label htmlFor={task.id as unknown as string}>{task.name}</label>
-          </li>
-        ))}
+        {tasks.map(
+          (task) =>
+            !task.completed && (
+              <li key={task.id}>
+                <input
+                  type="checkbox"
+                  id={task.id as unknown as string}
+                  checked={task.completed}
+                  onChange={() => handleChange(task)}
+                />
+                <label>{task.name}</label>
+              </li>
+            ),
+        )}
+      </ul>
+      <h3>Completed List</h3>
+      <ul>
+        {tasks.map(
+          (task) =>
+            task.completed && (
+              <li key={task.id}>
+                <input
+                  type="checkbox"
+                  id={task.id as unknown as string}
+                  checked={task.completed}
+                  onChange={() => handleChange(task)}
+                />
+                <label>{task.name}</label>
+              </li>
+            ),
+        )}
       </ul>
     </div>
   );
