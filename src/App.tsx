@@ -11,11 +11,8 @@ const App = () => {
   // useEffect 获取数据，以便能setTask
   useEffect(() => {
     fetch().then((data) => setTasks(data));
-    // console.log(tasks);
   }, []);
-
   function handleChange(task: Task) {
-    //console.log(task);
     const updatedTask = {
       ...task,
       completed: !task.completed,
@@ -29,8 +26,7 @@ const App = () => {
     setNewTodo('');
   };
   const handleDelete = (id: number | undefined) => {
-    console.log(tasks.length);
-    remove(Number(id));
+    remove(Number(id)).then(() => console.log(id));
     setTasks(tasks.filter((task) => task.id !== id));
   };
   return (
