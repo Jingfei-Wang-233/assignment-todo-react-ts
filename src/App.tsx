@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { add, fetch, remove, update } from './api/tasks';
 import { Task } from './types';
+import { AddTodo } from './component/AddTodo';
 
 const App = () => {
   // useState 更新 tasks的state
@@ -20,9 +21,8 @@ const App = () => {
     update(Number(task.id), updatedTask).then((data) => console.log(data));
     fetch().then((data) => setTasks(data));
   }
-
-  const handleClick = () => {
-    add(newTodo.trim()).then((data) => setTasks([...tasks, data]));
+  const handleAdd = () => {
+    newTodo.trim().length > 0 && add(newTodo.trim()).then((data) => setTasks([...tasks, data]));
     setNewTodo('');
   };
   const handleDelete = (id: number | undefined) => {
@@ -32,18 +32,11 @@ const App = () => {
   return (
     <div className="App">
       <h3>Todo List</h3>
-      <section>
-        <input
-          type="text"
-          className="todo-input"
-          placeholder="Enter your todo item"
-          value={newTodo}
-          onChange={(e) => setNewTodo(e.target.value)}
-        />
-        <button onClick={handleClick} className="add-btn">
-          +
-        </button>
-      </section>
+      <AddTodo
+        inputTodo={newTodo}
+        onChange={(e) => setNewTodo(e.target.value)}
+        onClick={handleAdd}
+      />
       <ul>
         {tasks
           .map(
