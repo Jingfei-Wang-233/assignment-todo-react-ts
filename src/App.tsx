@@ -10,23 +10,29 @@ const App = () => {
   const [newTodo, setNewTodo] = useState<string>('');
 
   // useEffect 获取数据，以便能setTask
+  // 通过useEffect实现列表数据的获取与更新
   useEffect(() => {
     fetch().then((data) => setTasks(data));
   }, []);
-  function handleChange(task: Task) {
+
+  // 更新 tasks
+  async function handleChange(task: Task) {
     const updatedTask = {
       ...task,
       completed: !task.completed,
     };
-    update(Number(task.id), updatedTask).then((data) => console.log(data));
-    fetch().then((data) => setTasks(data));
+    await update(Number(task.id), updatedTask).then((data) => console.log(data));
+    await fetch().then((data) => setTasks(data));
   }
-  const handleAdd = () => {
-    newTodo.trim().length > 0 && add(newTodo.trim()).then((data) => setTasks([...tasks, data]));
+  // 新增task
+  const handleAdd = async () => {
+    newTodo.trim().length > 0 &&
+      (await add(newTodo.trim()).then((data) => setTasks([...tasks, data])));
     setNewTodo('');
   };
-  const handleDelete = (id: number | undefined) => {
-    remove(Number(id)).then(() => console.log(id));
+  // 删除task
+  const handleDelete = async (id: number | undefined) => {
+    await remove(Number(id)).then(() => console.log(id));
     setTasks(tasks.filter((task) => task.id !== id));
   };
   return (
@@ -73,7 +79,7 @@ const App = () => {
                     checked={task.completed}
                     onChange={() => handleChange(task)}
                   />
-                  <label>{task.name}</label>
+                  <label> {task.name} </label>
                   <button className="bi-trash" onClick={() => handleDelete(task.id)}>
                     del
                   </button>
