@@ -2,22 +2,22 @@
   "tasks": [
     {
       "name": "add a second item",
-      "completed": true,
+      "completed": false,
       "id": 2
     },
     {
       "name": "a new task to complete",
-      "completed": true,
+      "completed": false,
       "id": 3
     },
     {
       "name": "new tasks",
-      "completed": true,
+      "completed": false,
       "id": 4
     },
     {
       "name": "new",
-      "completed": true,
+      "completed": false,
       "id": 5
     },
     {
@@ -27,17 +27,17 @@
     },
     {
       "name": "task 01",
-      "completed": false,
+      "completed": true,
       "id": 7
     },
     {
       "name": "tas 02",
-      "completed": false,
+      "completed": true,
       "id": 8
     },
     {
       "name": "task 03",
-      "completed": false,
+      "completed": true,
       "id": 9
     }
   ]
