@@ -47,7 +47,14 @@ const tasks = [
 ];
 
 export const resolvers = {
+  // return an array of tasks that will be used to populate
+  // for the render
   Query: {
-    tasks: () => tasks,
+    tasks(parent, args) {
+      if (args.completed !== null) {
+        return tasks.filter((task) => task.completed === args.completed);
+      }
+      return tasks;
+    },
   },
 };
