@@ -54,8 +54,11 @@ export const resolvers = {
   //   tasks: () => tasks,
   // },
   Query: {
-    tasks: (_, __, { dataSources }) => {
-      return dataSources.taskAPI.getTasks();
+    getAllTasks: (_, args, { dataSources }) => {
+      return dataSources.taskAPI.getTasks(args.completed);
+    },
+    getTaskById: (_, { id }, { dataSources }) => {
+      return dataSources.taskAPI.getTaskById(id);
     },
   },
 };
