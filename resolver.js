@@ -1,50 +1,4 @@
-// const tasks = [
-//   {
-//     id: 1,
-//     name: 'if the plane goes down',
-//     completed: false,
-//   },
-//   {
-//     id: 2,
-//     name: 'the airport',
-//     completed: false,
-//   },
-//   {
-//     id: 3,
-//     name: 'will shut down',
-//     completed: true,
-//   },
-//   {
-//     id: 4,
-//     name: 'new where to go then',
-//     completed: false,
-//   },
-//   {
-//     id: 5,
-//     name: 'how far I would go',
-//     completed: true,
-//   },
-//   {
-//     id: 6,
-//     name: 'random access',
-//     completed: false,
-//   },
-//   {
-//     id: 7,
-//     name: 'when I pass away',
-//     completed: true,
-//   },
-//   {
-//     id: 8,
-//     name: 'interesting',
-//     completed: false,
-//   },
-//   {
-//     id: 666,
-//     name: 'what should be the answer',
-//     completed: true,
-//   },
-// ];
+import { GraphQLError } from 'graphql';
 
 export const resolvers = {
   Query: {
@@ -57,9 +11,16 @@ export const resolvers = {
   },
   Mutation: {
     addTask: async (_, { name }, { dataSources }) => {
+      if (name === '') {
+        throw new GraphQLError('task name should not be empty!', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+          },
+        });
+      }
       const newTask = await dataSources.taskAPI.addTask(name);
       return {
-        code: 200,
+        code: 201,
         success: true,
         message: `Successfully add new task named ${name}`,
         task: newTask,
