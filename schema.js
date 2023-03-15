@@ -7,10 +7,24 @@ export const typeDefs = gql`
     "fetch a specific task by Id"
     getTaskById(id: Int!): Task
   }
+  type Mutation {
+    "add a new task with taskName with default completed false"
+    addTask(name: String!): AddTaskResponse!
+  }
   "a type entity correspond to type Task at client side"
   type Task {
     id: Int
     name: String!
     completed: Boolean!
+  }
+  type AddTaskResponse {
+    "similar to HTTP status code"
+    code: Int!
+    "indicate whether the mutation is successful"
+    success: Boolean!
+    "message for UI"
+    message: String!
+    "newly added task"
+    task: Task
   }
 `;

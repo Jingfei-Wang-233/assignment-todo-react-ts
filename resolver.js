@@ -47,18 +47,23 @@
 // ];
 
 export const resolvers = {
-  // return an array of tasks that will be used to populate
-  // for the render
-  // mocked:
-  // Query: {
-  //   tasks: () => tasks,
-  // },
   Query: {
     getAllTasks: (_, args, { dataSources }) => {
       return dataSources.taskAPI.getTasks(args.completed);
     },
     getTaskById: (_, { id }, { dataSources }) => {
       return dataSources.taskAPI.getTaskById(id);
+    },
+  },
+  Mutation: {
+    addTask: async (_, { name }, { dataSources }) => {
+      const newTask = await dataSources.taskAPI.addTask(name);
+      return {
+        code: 200,
+        success: true,
+        message: `Successfully add new task named ${name}`,
+        task: newTask,
+      };
     },
   },
 };
