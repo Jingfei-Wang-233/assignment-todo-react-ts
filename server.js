@@ -2,6 +2,7 @@ import { ApolloServer } from 'apollo-server';
 import { typeDefs } from './schema.js';
 import { resolvers } from './resolver.js';
 import { TaskAPI } from './datasources/task-api.js';
+import { ApolloServerErrorCode } from '@apollo/server/errors';
 
 const server = new ApolloServer({
   typeDefs,
@@ -10,6 +11,19 @@ const server = new ApolloServer({
     return {
       taskAPI: new TaskAPI(),
     };
+  },
+  includeStacktraceInErrorResponses: false,
+  formatError: (err) => {
+    if (err.extensions.code === ApolloServerErrorCode.INTERNAL_SERVER_ERROR) {
+      return new Error('Oops, something went wrong, please wait.');
+    }
+    if (err.extensions.code === ApolloServerErrorCode.BAD_USER_INPUT) {
+      return new Error('Invalid Input!');
+    }
+    if (err.message.includes('Not Found')) {
+      return new Error('Task not exist!');
+    }
+    return err;
   },
 });
 server.listen().then(() => {

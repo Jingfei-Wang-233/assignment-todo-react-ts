@@ -6,7 +6,7 @@ export const resolvers = {
       return dataSources.taskAPI.getTasks(args.completed);
     },
     getTaskById: (_, { id }, { dataSources }) => {
-      return dataSources.taskAPI.getTaskById(id);
+      return dataSources.taskAPI.getTaskById(id).catch((err) => console.log(err.message));
     },
   },
   Mutation: {
