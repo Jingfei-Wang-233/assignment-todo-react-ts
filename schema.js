@@ -9,7 +9,8 @@ export const typeDefs = gql`
   }
   type Mutation {
     "add a new task with taskName with default completed false"
-    addTask(name: String!): AddTaskResponse!
+    addTask(name: String!): TaskResponse!
+    markTask(id: Int!, name: String!, completed: Boolean!): TaskResponse!
   }
   "a type entity correspond to type Task at client side"
   type Task {
@@ -17,7 +18,7 @@ export const typeDefs = gql`
     name: String!
     completed: Boolean!
   }
-  type AddTaskResponse {
+  type TaskResponse {
     "similar to HTTP status code"
     code: Int!
     "indicate whether the mutation is successful"

@@ -26,5 +26,14 @@ export const resolvers = {
         task: newTask,
       };
     },
+    markTask: async (_, { id, name, completed }, { dataSources }) => {
+      const updatedTask = await dataSources.taskAPI.updateTask(id, name, completed);
+      return {
+        code: 200,
+        success: true,
+        message: `You have updated task ${id} successfully`,
+        task: updatedTask,
+      };
+    },
   },
 };

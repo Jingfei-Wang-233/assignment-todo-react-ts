@@ -19,4 +19,7 @@ export class TaskAPI extends RESTDataSource {
   addTask(name) {
     return this.post('tasks', { name: name });
   }
+  updateTask(id, name, completed) {
+    return this.put(`tasks/${id}`, { name: name, completed: completed });
+  }
 }
