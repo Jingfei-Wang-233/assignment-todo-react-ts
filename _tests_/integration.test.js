@@ -1,28 +1,74 @@
-// import { jest } from '@jest/globals';
+import { jest } from '@jest/globals';
 import { typeDefs } from '../server/schema.js';
 import { resolvers } from '../server/resolver.js';
 import { createTestClient } from 'apollo-server-testing';
 import { ApolloServer } from 'apollo-server';
 import { TaskAPI } from '../server/datasources/task-api.js';
 
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-  dataSources: () => {
-    return {
-      taskAPI: new TaskAPI(), //是否应该 把datasources给mock掉，还是直接把整个server给mock
-    };
-  },
-});
 describe('Query test', () => {
   it('should get todo tasks list', async () => {
-    // given
+    // given: mock the dataSources
+    const taskAPI = new TaskAPI();
+    taskAPI.getTasks = jest.fn().mockResolvedValue([
+      {
+        id: 1,
+        name: 'test',
+        completed: false,
+      },
+      {
+        id: 2,
+        name: 'test two',
+        completed: true,
+      },
+    ]);
+    // configure test server with mocked data sources
+    const server = new ApolloServer({
+      typeDefs,
+      resolvers,
+      context: () => ({ dataSources: { taskAPI } }),
+    });
+    // create test client
     const { query } = createTestClient(server);
-    const GET_ALL_TASKS = 'query { getAllTasks(completed: false) { id name completed } }';
     // when
+    const GET_ALL_TASKS = 'query { getAllTasks { id name completed } }';
     const { data } = await query({ query: GET_ALL_TASKS });
     // then
+    expect(taskAPI.getTasks).toHaveBeenCalled();
     expect(data).toHaveProperty('getAllTasks');
-    expect(Array.isArray(data.getAllTasks)).toBe(true);
+    expect(data.getAllTasks.length).toBe(2);
+    console.log(data.getAllTasks);
+  });
+
+  it('should get task by id', async () => {
+    const taskAPI = new TaskAPI();
+    // Given
+    taskAPI.getTaskById = jest.fn().mockResolvedValue({
+      id: 1,
+      name: 'test',
+      completed: false,
+    });
+    const server = new ApolloServer({
+      typeDefs,
+      resolvers,
+      context: () => ({ dataSources: { taskAPI } }),
+    });
+    const { query } = createTestClient(server);
+    // When
+    const GET_SINGLE_TASK = `query getTaskById($id: Int!) {
+      getTaskById(id: $id) {
+        id
+        name
+        completed
+      }
+    }`;
+    const { data } = await query({
+      query: GET_SINGLE_TASK,
+      variables: { id: 1 },
+    });
+    console.log(data);
+    // Then
+    expect(data).toHaveProperty('getTaskById');
+    expect(taskAPI.getTaskById).toHaveBeenCalled();
+    expect(data.getTaskById.name).toBe('test');
   });
 });

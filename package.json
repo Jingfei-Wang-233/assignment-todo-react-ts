@@ -15,10 +15,12 @@
   "dependencies": {
     "apollo-datasource-rest": "^3.7.0",
     "apollo-server": "^3.12.0",
-    "apollo-server-testing": "^2.25.3",
+    "apollo-server-testing": "^2.20.0",
     "axios": "^1.2.1",
     "graphql": "^16.6.0",
+    "graphql-query-test-mock": "^0.12.1",
     "graphql-tools": "^8.3.19",
+    "nock": "^13.3.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "ts-node": "^10.9.1"
