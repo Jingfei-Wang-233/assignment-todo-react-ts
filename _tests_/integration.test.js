@@ -43,7 +43,7 @@ describe('Query test', () => {
     const taskAPI = new TaskAPI();
     // Given
     taskAPI.getTaskById = jest.fn().mockResolvedValue({
-      id: 1,
+      id: 2,
       name: 'test',
       completed: false,
     });
@@ -63,12 +63,12 @@ describe('Query test', () => {
     }`;
     const { data } = await query({
       query: GET_SINGLE_TASK,
-      variables: { id: 1 },
+      variables: { id: 2 },
     });
     console.log(data);
     // Then
     expect(data).toHaveProperty('getTaskById');
-    expect(taskAPI.getTaskById).toHaveBeenCalled();
+    expect(taskAPI.getTaskById).toHaveBeenCalledWith(2);
     expect(data.getTaskById.name).toBe('test');
   });
 });
