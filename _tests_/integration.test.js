@@ -101,7 +101,6 @@ describe('integration test', () => {
       const { mutate } = createTestClient(server);
       const { data } = await mutate({ mutation: ADD_NEW_TASK, variables: { name: taskName } });
       expect(data).toHaveProperty('addTask');
-      // expect(data.addTask.task).toBe({});
       expect(data.addTask.code).toBe(201);
       expect(data.addTask.success).toBe(true);
       expect(data.addTask.message).toBe(`Successfully add new task named ${taskName}`);
@@ -135,6 +134,47 @@ describe('integration test', () => {
         },
       });
       expect(errors[0].message).toBe('task name should not be empty!');
+    });
+
+    it('should update task by id', async () => {
+      const taskAPI = new TaskAPI();
+      const updatedTask = {
+        id: 1,
+        name: 'updated task',
+        completed: true,
+      };
+      taskAPI.updateTask = jest.fn().mockResolvedValue(updatedTask);
+      const server = new ApolloServer({
+        typeDefs,
+        resolvers,
+        context: () => ({ dataSources: { taskAPI } }),
+      });
+      const UPDATE_TASK = `mutation markTask($id: Int!, $name: String!, $completed: Boolean!) {
+      markTask(id: $id, name: $name, completed: $completed) {
+        task {
+          id
+          name
+          completed
+        }
+        success
+        message
+        code
+      }
+    }`;
+      const { mutate } = createTestClient(server);
+      const { data } = await mutate({
+        mutation: UPDATE_TASK,
+        variables: {
+          id: 1,
+          name: 'updated task',
+          completed: true,
+        },
+      });
+      expect(data).toHaveProperty('markTask');
+      expect(data.markTask.success).toBe(true);
+      expect(data.markTask.code).toBe(200);
+      expect(data.markTask.message).toBe('You have updated task 1 successfully');
+      expect(data.markTask.task).toMatchObject(updatedTask);
     });
   });
 });
