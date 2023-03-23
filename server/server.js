@@ -1,15 +1,16 @@
 import { ApolloServer } from 'apollo-server';
 import { typeDefs } from './schema.js';
 import { resolvers } from './resolver.js';
-import { TaskAPI } from './datasources/task-api.js';
 import { ApolloServerErrorCode } from '@apollo/server/errors';
+import { ElasticsearchDataSource } from './es-datasource/esDataSource.js';
 
 const server = new ApolloServer({
   typeDefs,
   resolvers,
   dataSources: () => {
     return {
-      taskAPI: new TaskAPI(),
+      // taskAPI: new TaskAPI(),
+      elasticSearch: new ElasticsearchDataSource(),
     };
   },
   includeStacktraceInErrorResponses: false,
