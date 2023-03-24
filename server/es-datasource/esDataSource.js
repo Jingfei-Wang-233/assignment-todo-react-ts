@@ -57,4 +57,10 @@ export class ElasticsearchDataSource extends DataSource {
       },
     });
   }
+  async deleteTask(taskId) {
+    return await this.client.delete({
+      index: TASK_INDEX,
+      id: taskId,
+    });
+  }
 }

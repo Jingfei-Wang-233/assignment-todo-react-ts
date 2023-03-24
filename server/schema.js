@@ -11,6 +11,7 @@ export const typeDefs = gql`
     "add a new task with taskName with default completed false"
     addTask(name: String!): Task!
     updateTask(id: ID!, name: String!, completed: Boolean!): Task!
+    deleteTask(id: ID!): String!
   }
   "a type entity correspond to type Task at client side"
   type Task {

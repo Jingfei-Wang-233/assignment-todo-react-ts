@@ -48,5 +48,9 @@ export const resolvers = {
         completed: completed,
       };
     },
+    deleteTask: async (_, { id }, { dataSources }) => {
+      const res = await dataSources.elasticSearch.deleteTask(id);
+      return res._id;
+    },
   },
 };
