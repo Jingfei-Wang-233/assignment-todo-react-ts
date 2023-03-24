@@ -5,16 +5,16 @@ export const typeDefs = gql`
     "query to get tasks"
     getAllTasks(completed: Boolean): [Task!]
     "fetch a specific task by Id"
-    getTaskById(id: Int!): Task
+    getTaskById(id: ID!): Task
   }
   type Mutation {
     "add a new task with taskName with default completed false"
-    addTask(name: String!): TaskResponse!
-    markTask(id: Int!, name: String!, completed: Boolean!): TaskResponse!
+    addTask(name: String!): Task!
+    markTask(id: ID!, name: String!, completed: Boolean!): TaskResponse!
   }
   "a type entity correspond to type Task at client side"
   type Task {
-    id: Int
+    id: ID
     name: String!
     completed: Boolean!
   }
