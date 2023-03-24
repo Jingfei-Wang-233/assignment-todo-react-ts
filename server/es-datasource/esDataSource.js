@@ -37,7 +37,6 @@ export class ElasticsearchDataSource extends DataSource {
       index: 'tasks',
       id: taskId,
     });
-    console.log(response);
     return {
       id: response._id,
       name: response._source.name,
@@ -56,6 +55,22 @@ export class ElasticsearchDataSource extends DataSource {
       id: response._id,
       name: taskName,
       completed: false,
+    };
+  }
+  async updateTask(taskId, taskName, completed) {
+    const response = await this.client.update({
+      index: 'tasks',
+      id: taskId,
+      doc: {
+        name: taskName,
+        completed: completed,
+      },
+    });
+    console.log(response);
+    return {
+      id: response._id,
+      name: taskName,
+      completed: completed,
     };
   }
 }

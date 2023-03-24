@@ -10,7 +10,7 @@ export const typeDefs = gql`
   type Mutation {
     "add a new task with taskName with default completed false"
     addTask(name: String!): Task!
-    markTask(id: ID!, name: String!, completed: Boolean!): TaskResponse!
+    updateTask(id: ID!, name: String!, completed: Boolean!): Task!
   }
   "a type entity correspond to type Task at client side"
   type Task {

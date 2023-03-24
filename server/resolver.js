@@ -1,4 +1,4 @@
-import { GraphQLError } from 'graphql/error/index.js';
+import { GraphQLError } from 'graphql';
 
 export const resolvers = {
   // Query: {
@@ -55,6 +55,22 @@ export const resolvers = {
       }
       console.log(name);
       return await dataSources.elasticSearch.createTask(name);
+    },
+    updateTask: async (_, { id, name, completed }, { dataSources }) => {
+      const res = await dataSources.elasticSearch.updateTask(id, name, completed);
+      console.log(res);
+      if (res.result === 'noop') {
+        throw new GraphQLError('Either taskName or completed status should be updated', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+          },
+        });
+      }
+      return {
+        id: res._id,
+        name: name,
+        completed: completed,
+      };
     },
   },
 };
