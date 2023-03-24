@@ -35,8 +35,11 @@ export const resolvers = {
   //   },
   // },
   Query: {
-    getAllTasks: (_, __, { dataSources }) => {
-      return dataSources.elasticSearch.getTasks();
+    getAllTasks: async (_, __, { dataSources }) => {
+      return await dataSources.elasticSearch.getTasks();
+    },
+    getTaskById: async (_, { id }, { dataSources }) => {
+      return await dataSources.elasticSearch.getTaskById(id);
     },
   },
 };

@@ -23,13 +23,25 @@ export class ElasticsearchDataSource extends DataSource {
         query: {
           match_all: {},
         },
+        size: 100,
       },
     });
-    console.log(response);
     return response.hits.hits.map((hit) => ({
       id: hit._id,
       name: hit._source.name,
       completed: hit._source.completed,
     }));
+  }
+  async getTaskById(taskId) {
+    const response = await this.client.get({
+      index: 'tasks',
+      id: taskId,
+    });
+    console.log(response);
+    return {
+      id: response._id,
+      name: response._source.name,
+      completed: response._source.completed,
+    };
   }
 }
