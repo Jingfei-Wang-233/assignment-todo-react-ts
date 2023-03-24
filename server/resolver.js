@@ -12,7 +12,6 @@ export const resolvers = {
     },
     getTaskById: async (_, { id }, { dataSources }) => {
       const res = await dataSources.elasticSearch.getTaskById(id);
-      console.log(res);
       return {
         id: res._id,
         name: res._source.name,
@@ -29,12 +28,10 @@ export const resolvers = {
           },
         });
       }
-      console.log(name);
       return await dataSources.elasticSearch.createTask(name);
     },
     updateTask: async (_, { id, name, completed }, { dataSources }) => {
       const res = await dataSources.elasticSearch.updateTask(id, name, completed);
-      console.log(res);
       if (res.result === 'noop') {
         throw new GraphQLError('Either taskName or completed status should be updated', {
           extensions: {

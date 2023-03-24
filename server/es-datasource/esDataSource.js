@@ -1,11 +1,13 @@
 import { DataSource } from 'apollo-datasource';
 import { Client } from '@elastic/elasticsearch';
 import * as fs from 'fs';
+import { ES_NODE, TASK_INDEX } from '../constants/constants.js';
+
 export class ElasticsearchDataSource extends DataSource {
   constructor() {
     super();
     this.client = new Client({
-      node: 'https://localhost:9200',
+      node: ES_NODE,
       auth: {
         username: 'elastic',
         password: 'changeme',
@@ -18,7 +20,7 @@ export class ElasticsearchDataSource extends DataSource {
   }
   async getTasks() {
     return await this.client.search({
-      index: 'tasks',
+      index: TASK_INDEX,
       body: {
         query: {
           match_all: {},
@@ -29,13 +31,13 @@ export class ElasticsearchDataSource extends DataSource {
   }
   async getTaskById(taskId) {
     return await this.client.get({
-      index: 'tasks',
+      index: TASK_INDEX,
       id: taskId,
     });
   }
   async createTask(taskName) {
     const response = await this.client.index({
-      index: 'tasks',
+      index: TASK_INDEX,
       document: {
         name: taskName,
         completed: false,
@@ -49,7 +51,7 @@ export class ElasticsearchDataSource extends DataSource {
   }
   async updateTask(taskId, taskName, completed) {
     return await this.client.update({
-      index: 'tasks',
+      index: TASK_INDEX,
       id: taskId,
       doc: {
         name: taskName,

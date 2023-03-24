@@ -5,7 +5,6 @@ describe('schema', () => {
   describe('typeDefs', () => {
     it('should define a valid schema', () => {
       const schema = makeExecutableSchema({ typeDefs });
-      console.log(schema);
       expect(schema).toBeDefined();
     });
   });
