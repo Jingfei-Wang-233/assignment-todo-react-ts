@@ -17,7 +17,7 @@ export class ElasticsearchDataSource extends DataSource {
     });
   }
   async getTasks() {
-    const response = await this.client.search({
+    return await this.client.search({
       index: 'tasks',
       body: {
         query: {
@@ -26,22 +26,12 @@ export class ElasticsearchDataSource extends DataSource {
         size: 100,
       },
     });
-    return response.hits.hits.map((hit) => ({
-      id: hit._id,
-      name: hit._source.name,
-      completed: hit._source.completed,
-    }));
   }
   async getTaskById(taskId) {
-    const response = await this.client.get({
+    return await this.client.get({
       index: 'tasks',
       id: taskId,
     });
-    return {
-      id: response._id,
-      name: response._source.name,
-      completed: response._source.completed,
-    };
   }
   async createTask(taskName) {
     const response = await this.client.index({
@@ -58,7 +48,7 @@ export class ElasticsearchDataSource extends DataSource {
     };
   }
   async updateTask(taskId, taskName, completed) {
-    const response = await this.client.update({
+    return await this.client.update({
       index: 'tasks',
       id: taskId,
       doc: {
@@ -66,11 +56,5 @@ export class ElasticsearchDataSource extends DataSource {
         completed: completed,
       },
     });
-    console.log(response);
-    return {
-      id: response._id,
-      name: taskName,
-      completed: completed,
-    };
   }
 }

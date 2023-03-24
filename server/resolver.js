@@ -1,47 +1,23 @@
 import { GraphQLError } from 'graphql';
 
 export const resolvers = {
-  // Query: {
-  //   getAllTasks: (_, args, { dataSources }) => {
-  //     return dataSources.taskAPI.getTasks(args.completed);
-  //   },
-  //   getTaskById: (_, { id }, { dataSources }) => {
-  //     return dataSources.taskAPI.getTaskById(id).catch((err) => console.log(err.message));
-  //   },
-  // },
-  // Mutation: {
-  //   addTask: async (_, { name }, { dataSources }) => {
-  //     if (name === '') {
-  //       throw new GraphQLError('task name should not be empty!', {
-  //         extensions: {
-  //           code: 'BAD_USER_INPUT',
-  //         },
-  //       });
-  //     }
-  //     const newTask = await dataSources.taskAPI.addTask(name);
-  //     return {
-  //       code: 201,
-  //       success: true,
-  //       message: `Successfully add new task named ${name}`,
-  //       task: newTask,
-  //     };
-  //   },
-  //   markTask: async (_, { id, name, completed }, { dataSources }) => {
-  //     const updatedTask = await dataSources.taskAPI.updateTask(id, name, completed);
-  //     return {
-  //       code: 200,
-  //       success: true,
-  //       message: `You have updated task ${id} successfully`,
-  //       task: updatedTask,
-  //     };
-  //   },
-  // },
   Query: {
     getAllTasks: async (_, __, { dataSources }) => {
-      return await dataSources.elasticSearch.getTasks();
+      const res = await dataSources.elasticSearch.getTasks();
+      return res.hits.hits.map((hit) => ({
+        id: hit._id,
+        name: hit._source.name,
+        completed: hit._source.completed,
+      }));
     },
     getTaskById: async (_, { id }, { dataSources }) => {
-      return await dataSources.elasticSearch.getTaskById(id);
+      const res = await dataSources.elasticSearch.getTaskById(id);
+      console.log(res);
+      return {
+        id: res._id,
+        name: res._source.name,
+        completed: res._source.completed,
+      };
     },
   },
   Mutation: {

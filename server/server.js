@@ -19,7 +19,7 @@ const server = new ApolloServer({
       return new Error('Oops, something went wrong, please wait.');
     }
     if (err.extensions.code === ApolloServerErrorCode.BAD_USER_INPUT) {
-      return new Error('Invalid Input!');
+      return new Error(err.message);
     }
     if (err.message.includes('Not Found')) {
       return new Error('Task not exist!');
