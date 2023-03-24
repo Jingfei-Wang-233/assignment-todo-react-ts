@@ -1,3 +1,5 @@
+import { GraphQLError } from 'graphql/error/index.js';
+
 export const resolvers = {
   // Query: {
   //   getAllTasks: (_, args, { dataSources }) => {
@@ -40,6 +42,19 @@ export const resolvers = {
     },
     getTaskById: async (_, { id }, { dataSources }) => {
       return await dataSources.elasticSearch.getTaskById(id);
+    },
+  },
+  Mutation: {
+    addTask: async (_, { name }, { dataSources }) => {
+      if (name === '') {
+        throw new GraphQLError('task name should not be blank', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+          },
+        });
+      }
+      console.log(name);
+      return await dataSources.elasticSearch.createTask(name);
     },
   },
 };

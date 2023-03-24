@@ -44,4 +44,18 @@ export class ElasticsearchDataSource extends DataSource {
       completed: response._source.completed,
     };
   }
+  async createTask(taskName) {
+    const response = await this.client.index({
+      index: 'tasks',
+      document: {
+        name: taskName,
+        completed: false,
+      },
+    });
+    return {
+      id: response._id,
+      name: taskName,
+      completed: false,
+    };
+  }
 }
