@@ -29,6 +29,9 @@ export class TaskAPI extends DataSource {
         match_all: {},
       },
       size: 100,
+      sort: {
+        createdAt: 'desc',
+      },
     });
   }
   async getTaskById(taskId: string): Promise<object> {
@@ -38,17 +41,20 @@ export class TaskAPI extends DataSource {
     });
   }
   async createTask(taskName: string): Promise<object> {
+    const createdTime = Date.now();
     const response = await this.client.index({
       index: TASK_INDEX,
       document: {
         name: taskName,
         completed: false,
+        createdAt: createdTime,
       },
     });
     return {
       id: response._id,
       name: taskName,
       completed: false,
+      createdAt: createdTime,
     };
   }
   async updateTask(taskId: string, taskName: string, completed: boolean): Promise<object> {

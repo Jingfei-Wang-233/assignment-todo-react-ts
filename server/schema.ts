@@ -1,6 +1,7 @@
 import { gql } from 'apollo-server';
 
 export const typeDefs = gql`
+  scalar Date
   type Query {
     "query to get tasks"
     getAllTasks(completed: Boolean): [Task!]
@@ -18,15 +19,6 @@ export const typeDefs = gql`
     id: ID
     name: String!
     completed: Boolean!
-  }
-  type TaskResponse {
-    "similar to HTTP status code"
-    code: Int!
-    "indicate whether the mutation is successful"
-    success: Boolean!
-    "message for UI"
-    message: String!
-    "newly added task"
-    task: Task
+    createdAt: Date
   }
 `;

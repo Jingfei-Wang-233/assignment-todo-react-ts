@@ -1,13 +1,24 @@
 import { GraphQLError } from 'graphql';
+
 export const resolvers = {
   Query: {
     getAllTasks: async (_: null, __: null, { dataSources }: any) => {
       const res = await dataSources.taskAPI.getTasks();
-      return res.hits.hits.map((hit: any) => ({
-        id: hit._id,
-        name: hit._source.name,
-        completed: hit._source.completed,
-      }));
+      return res.hits.hits.map((hit: any) => {
+        return hit._source.createdAt === null
+          ? {
+              id: hit._id,
+              name: hit._source.name,
+              completed: hit._source.completed,
+              createdAt: null,
+            }
+          : {
+              id: hit._id,
+              name: hit._source.name,
+              completed: hit._source.completed,
+              createdAt: hit._source.createdAt,
+            };
+      });
     },
     getTaskById: async (_: null, { id }: { id: string }, { dataSources }: any) => {
       const res = await dataSources.taskAPI.getTaskById(id);
@@ -15,6 +26,7 @@ export const resolvers = {
         id: res._id,
         name: res._source.name,
         completed: res._source.completed,
+        createdAt: res._source.createdAt,
       };
     },
   },
