@@ -1,20 +1,20 @@
 import { ApolloServer } from 'apollo-server';
-import { typeDefs } from './schema.js';
 import { resolvers } from './resolver.js';
 import { ApolloServerErrorCode } from '@apollo/server/errors';
-import { ElasticsearchDataSource } from './es-datasource/esDataSource.js';
+import { TaskAPI } from './es-datasource/esDataSource.js';
+import { GraphQLError } from 'graphql';
+import { typeDefs } from './schema.js';
 
 const server = new ApolloServer({
   typeDefs,
   resolvers,
   dataSources: () => {
     return {
-      // taskAPI: new TaskAPI(),
-      elasticSearch: new ElasticsearchDataSource(),
+      taskAPI: new TaskAPI(),
     };
   },
   includeStacktraceInErrorResponses: false,
-  formatError: (err) => {
+  formatError: (err: GraphQLError) => {
     if (err.extensions.code === ApolloServerErrorCode.INTERNAL_SERVER_ERROR) {
       return new Error('Oops, something went wrong, please wait.');
     }

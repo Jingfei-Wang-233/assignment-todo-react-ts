@@ -1,9 +1,13 @@
 import { DataSource } from 'apollo-datasource';
 import { Client } from '@elastic/elasticsearch';
 import * as fs from 'fs';
-import { ES_NODE, TASK_INDEX } from '../constants/constants.js';
 
-export class ElasticsearchDataSource extends DataSource {
+const ES_NODE = 'https://localhost:9200';
+
+const TASK_INDEX = 'tasks';
+
+export class TaskAPI extends DataSource {
+  private client: Client;
   constructor() {
     super();
     this.client = new Client({
@@ -18,24 +22,22 @@ export class ElasticsearchDataSource extends DataSource {
       },
     });
   }
-  async getTasks() {
+  async getTasks(): Promise<object> {
     return await this.client.search({
       index: TASK_INDEX,
-      body: {
-        query: {
-          match_all: {},
-        },
-        size: 100,
+      query: {
+        match_all: {},
       },
+      size: 100,
     });
   }
-  async getTaskById(taskId) {
+  async getTaskById(taskId: string): Promise<object> {
     return await this.client.get({
       index: TASK_INDEX,
       id: taskId,
     });
   }
-  async createTask(taskName) {
+  async createTask(taskName: string): Promise<object> {
     const response = await this.client.index({
       index: TASK_INDEX,
       document: {
@@ -49,7 +51,7 @@ export class ElasticsearchDataSource extends DataSource {
       completed: false,
     };
   }
-  async updateTask(taskId, taskName, completed) {
+  async updateTask(taskId: string, taskName: string, completed: boolean): Promise<object> {
     return await this.client.update({
       index: TASK_INDEX,
       id: taskId,
@@ -59,7 +61,7 @@ export class ElasticsearchDataSource extends DataSource {
       },
     });
   }
-  async deleteTask(taskId) {
+  async deleteTask(taskId: string): Promise<object> {
     return await this.client.delete({
       index: TASK_INDEX,
       id: taskId,
