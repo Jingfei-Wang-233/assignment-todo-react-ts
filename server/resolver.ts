@@ -16,7 +16,7 @@ export const resolvers = {
               id: hit._id,
               name: hit._source.name,
               completed: hit._source.completed,
-              createdAt: hit._source.createdAt,
+              createdAt: new Date(hit._source.createdAt).toISOString(),
             };
       });
     },
@@ -26,7 +26,7 @@ export const resolvers = {
         id: res._id,
         name: res._source.name,
         completed: res._source.completed,
-        createdAt: res._source.createdAt,
+        createdAt: new Date(res._source.createdAt).toISOString(),
       };
     },
   },

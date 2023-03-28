@@ -63,7 +63,7 @@ export class TaskAPI extends DataSource {
       id: response._id,
       name: taskName,
       completed: false,
-      createdAt: createdTime,
+      createdAt: new Date(createdTime).toISOString(),
     };
   }
   async updateTask(taskId: string, taskName: string, completed: boolean): Promise<object> {
