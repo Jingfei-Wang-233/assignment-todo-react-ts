@@ -22,12 +22,21 @@ export class TaskAPI extends DataSource {
       },
     });
   }
-  async getTasks(): Promise<object> {
-    return await this.client.search({
+  // 如何改进此处的查询
+  async getTasks(completed?: boolean): Promise<object> {
+    const taskQuery =
+      typeof completed === 'boolean'
+        ? {
+            match: {
+              completed: completed,
+            },
+          }
+        : {
+            match_all: {},
+          };
+    return this.client.search({
       index: TASK_INDEX,
-      query: {
-        match_all: {},
-      },
+      query: taskQuery,
       size: 100,
       sort: {
         createdAt: 'desc',

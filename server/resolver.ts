@@ -2,8 +2,8 @@ import { GraphQLError } from 'graphql';
 
 export const resolvers = {
   Query: {
-    getAllTasks: async (_: null, __: null, { dataSources }: any) => {
-      const res = await dataSources.taskAPI.getTasks();
+    getAllTasks: async (_: null, { completed }: { completed?: boolean }, { dataSources }: any) => {
+      const res = await dataSources.taskAPI.getTasks(completed);
       return res.hits.hits.map((hit: any) => {
         return hit._source.createdAt === null
           ? {
