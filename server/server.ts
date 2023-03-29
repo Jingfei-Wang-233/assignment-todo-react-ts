@@ -16,13 +16,10 @@ const server = new ApolloServer({
   dataSources,
   includeStacktraceInErrorResponses: false,
   formatError: (err: GraphQLError) => {
-    if (err.extensions.code === ApolloServerErrorCode.INTERNAL_SERVER_ERROR) {
-      return new Error('Oops, something went wrong, please wait.');
-    }
     if (err.extensions.code === ApolloServerErrorCode.BAD_USER_INPUT) {
       return new Error(err.message);
     }
-    if (err.message.includes('Not Found')) {
+    if (err.message.includes('not_found')) {
       return new Error('Task not exist!');
     }
     return err;
