@@ -1,12 +1,25 @@
 import { DataSource } from 'apollo-datasource';
 import { Client } from '@elastic/elasticsearch';
 import * as fs from 'fs';
+import {
+  DeleteResponse,
+  SearchResponseBody,
+  UpdateResponse,
+} from '@elastic/elasticsearch/lib/api/types';
+
+export type TaskAPIDataSource = {
+  getTasks: (completed?: boolean) => Promise<SearchResponseBody>;
+  getTaskById: (taskId: string) => Promise<any>;
+  createTask: (taskName: string) => Promise<object>;
+  updateTask: (taskId: string, taskName: string, completed?: boolean) => Promise<UpdateResponse>;
+  deleteTask: (taskId: string) => Promise<DeleteResponse>;
+};
 
 const ES_NODE = 'https://localhost:9200';
 
 const TASK_INDEX = 'tasks';
 
-export class TaskAPI extends DataSource {
+export class TaskAPI extends DataSource implements TaskAPIDataSource {
   private client: Client;
   constructor() {
     super();
@@ -23,7 +36,8 @@ export class TaskAPI extends DataSource {
     });
   }
   // 如何改进此处的查询
-  async getTasks(completed?: boolean): Promise<object> {
+  // 将来可以考虑将接口改为分页查询
+  async getTasks(completed?: boolean) {
     const taskQuery =
       typeof completed === 'boolean'
         ? {
@@ -43,13 +57,13 @@ export class TaskAPI extends DataSource {
       },
     });
   }
-  async getTaskById(taskId: string): Promise<object> {
+  async getTaskById(taskId: string) {
     return await this.client.get({
       index: TASK_INDEX,
       id: taskId,
     });
   }
-  async createTask(taskName: string): Promise<object> {
+  async createTask(taskName: string) {
     const createdTime = Date.now();
     const response = await this.client.index({
       index: TASK_INDEX,
@@ -66,7 +80,7 @@ export class TaskAPI extends DataSource {
       createdAt: new Date(createdTime).toISOString(),
     };
   }
-  async updateTask(taskId: string, taskName: string, completed: boolean): Promise<object> {
+  async updateTask(taskId: string, taskName: string, completed?: boolean) {
     return await this.client.update({
       index: TASK_INDEX,
       id: taskId,
@@ -76,7 +90,7 @@ export class TaskAPI extends DataSource {
       },
     });
   }
-  async deleteTask(taskId: string): Promise<object> {
+  async deleteTask(taskId: string) {
     return await this.client.delete({
       index: TASK_INDEX,
       id: taskId,

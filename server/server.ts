@@ -4,15 +4,16 @@ import { ApolloServerErrorCode } from '@apollo/server/errors';
 import { TaskAPI } from './es-datasource/esDataSource.js';
 import { GraphQLError } from 'graphql';
 import { typeDefs } from './schema.js';
+import { EsDataSources } from './es-datasource';
 
+const dataSources = () =>
+  ({
+    taskAPI: new TaskAPI(),
+  } as EsDataSources);
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  dataSources: () => {
-    return {
-      taskAPI: new TaskAPI(),
-    };
-  },
+  dataSources,
   includeStacktraceInErrorResponses: false,
   formatError: (err: GraphQLError) => {
     if (err.extensions.code === ApolloServerErrorCode.INTERNAL_SERVER_ERROR) {

@@ -1,10 +1,40 @@
 import { GraphQLError } from 'graphql';
+import { EsDataSources } from './es-datasource';
+import { SearchHit } from '@elastic/elasticsearch/lib/api/types';
 
-export const resolvers = {
+// define what a context object looks like
+type Context = {
+  dataSources: EsDataSources;
+};
+
+type Args = {
+  id: string;
+  completed?: boolean;
+  name: string;
+};
+
+// define what a resolver function looks like
+type ResolverFunction = (
+  parent: null,
+  args: Args,
+  context: Context,
+) => Promise<object> | Promise<string> | Error;
+
+// Define the top-level resolvers.
+type ResolverMap = {
+  [fieldName: string]: ResolverFunction;
+};
+
+// Define the top-level resolvers.
+type Resolvers = {
+  Query: ResolverMap;
+  Mutation: ResolverMap;
+};
+export const resolvers: Resolvers = {
   Query: {
-    getAllTasks: async (_: null, { completed }: { completed?: boolean }, { dataSources }: any) => {
+    getAllTasks: async (_, { completed }, { dataSources }) => {
       const res = await dataSources.taskAPI.getTasks(completed);
-      return res.hits.hits.map((hit: any) => {
+      return res.hits.hits.map((hit: SearchHit<any>) => {
         return hit._source.createdAt === null
           ? {
               id: hit._id,
@@ -20,7 +50,7 @@ export const resolvers = {
             };
       });
     },
-    getTaskById: async (_: null, { id }: { id: string }, { dataSources }: any) => {
+    getTaskById: async (_, { id }, { dataSources }) => {
       const res = await dataSources.taskAPI.getTaskById(id);
       return {
         id: res._id,
@@ -31,7 +61,7 @@ export const resolvers = {
     },
   },
   Mutation: {
-    addTask: async (_: null, { name }: { name: string }, { dataSources }: any) => {
+    addTask: async (_, { name }, { dataSources }) => {
       if (name === '') {
         throw new GraphQLError('task name should not be blank', {
           extensions: {
@@ -39,13 +69,9 @@ export const resolvers = {
           },
         });
       }
-      return await dataSources.taskAPI.createTask(name);
+      return dataSources.taskAPI.createTask(name);
     },
-    updateTask: async (
-      _: null,
-      { id, name, completed }: { id: string; name: string; completed: boolean },
-      { dataSources }: any,
-    ) => {
+    updateTask: async (_, { id, name, completed }, { dataSources }) => {
       const res = await dataSources.taskAPI.updateTask(id, name, completed);
       if (res.result === 'noop') {
         throw new GraphQLError('Either taskName or completed status should be updated', {
@@ -60,9 +86,9 @@ export const resolvers = {
         completed: completed,
       };
     },
-    deleteTask: async (_: null, { id }: { id: string }, { dataSources }: any) => {
+    deleteTask: async (_: null, { id }, { dataSources }) => {
       const res = await dataSources.taskAPI.deleteTask(id);
-      return res._id;
+      return `task ${res._id} has been deleted successfully`;
     },
   },
 };
