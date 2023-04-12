@@ -20,7 +20,8 @@ type ResolverFunction = (
   context: Context,
 ) => Promise<object> | Promise<string> | Error;
 
-// Define the top-level resolvers.
+// Define a resolvers map which holds all of your nested resolvers
+// maybe can be refactored using Generic
 type ResolverMap = {
   [fieldName: string]: ResolverFunction;
 };

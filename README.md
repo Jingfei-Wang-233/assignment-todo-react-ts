@@ -114,3 +114,12 @@ npm run lint
 ```
 npm run format
 ```
+# 使用 ES dataSources 与 GraphQL Server
+## 启动 docker
+```bash
+cd docker && docker-compose up -d
+```
+### 启动 Apollo Server
+```shell
+cd server && ts-node-esm server.ts
+```
